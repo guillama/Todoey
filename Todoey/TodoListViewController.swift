@@ -10,11 +10,16 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
-    let itemArray = ["Milk", "Buy eggs", "Finish App"]
+    var itemArray = ["Milk", "Buy eggs", "Finish App"]
+    
+    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+            itemArray = items
+        }
     }
     
     //MARK - Tableview Datasource Methods
@@ -30,10 +35,10 @@ class TodoListViewController: UITableViewController {
         return itemArray.count
     }
     
+     //MARK - TableView Delegate Methods
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //let cell = tableView.cellForRow(at: indexPath)!
-        
-        print(itemArray[indexPath.row])
         
         if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
             tableView.cellForRow(at: indexPath)?.accessoryType = .none
@@ -46,5 +51,30 @@ class TodoListViewController: UITableViewController {
         
     }
     
-    //MARK - TableView Delegate Methods
+    //MARK - Add New Items
+   
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "Add item", style: .default) { (action) in
+        
+            self.itemArray.append(textField.text!)
+            self.tableView.reloadData()
+            
+            self.defaults.set(self.itemArray, forKey: "TodoListArray")
+        }
+        
+        alert.addAction(action)
+        alert.addTextField {
+            (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField
+        }
+        
+        present(alert, animated: true)
+        
+    }
 }
