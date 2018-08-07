@@ -68,8 +68,6 @@ class TodoListViewController: UITableViewController {
             newItem.done = false
             newItem.parentCategory = self.selectedCategory
             
-            print("parentCategory.name = \(newItem.parentCategory?.name)")
-            
             self.itemArray.append(newItem)
             
             self.saveItems()
